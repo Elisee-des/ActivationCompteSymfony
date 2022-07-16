@@ -23,7 +23,7 @@ class Newsletter
     private $created_at;
 
     #[ORM\Column(type: 'boolean')]
-    private $is_send;
+    private $is_send = false;
 
     #[ORM\ManyToOne(targetEntity: Categories::class, inversedBy: 'newsletters')]
     #[ORM\JoinColumn(nullable: false)]
