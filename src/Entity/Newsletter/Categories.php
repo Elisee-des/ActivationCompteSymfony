@@ -18,7 +18,7 @@ class Categories
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[ORM\ManyToMany(targetEntity: Users::class, inversedBy: 'categories')]
+    #[ORM\ManyToMany(targetEntity: Users::class, mappedBy: 'categories')]
     private $users;
 
     #[ORM\OneToMany(mappedBy: 'categories', targetEntity: Newsletter::class, orphanRemoval: true)]

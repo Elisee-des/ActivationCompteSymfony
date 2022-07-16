@@ -1,0 +1,6 @@
+<h2>Votre inscription</h2>
+
+<p>Vous etes inscrit(e) a la newletter</p>
+
+<p>Cliquez sur ce lien <a href="{{ absolute_url(path('newsletters_confrimation', {id: user.id, token: token})) }}">
+{{ absolute_url(path('newsletters_confrimation', {id: user.id, token: token} )) }}</a> pour activer votre compte</p>
