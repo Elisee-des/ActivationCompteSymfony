@@ -116,4 +116,57 @@ class NewslettersUsersController extends AbstractController
             'newsletters' => $newsletterRepository->findAll()
         ]);
     }
+
+    #[Route('/send/{id}', name: 'send')]
+    public function send(Newsletter $newsletter, EntityManagerInterface $em, MailerInterface $mailer): Response
+    {
+        $users = $newsletter->getCategories()->getUsers();
+
+        foreach ($users as $user) {
+            if ($user->getIsValid() == true) {
+                $email = (new TemplatedEmail())
+                    ->from("Newsletter@site.fr")
+                    ->to($user->getEmail())
+                    ->subject($newsletter->getName())
+                    ->htmlTemplate('emails/newsletters.html.twig')
+                    ->context([
+                        'user' => $user,
+                        'newsletter' => $newsletter
+                    ]);
+
+                $mailer->send($email);
+            }
+
+            $newsletter->setIsSend(true);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('newsletters_list');
+    }
+
+    #[Route('/unsubscriber/{id}/{newsletter}/{token}', name: 'unsubscriber')]
+    public function unsubcriber(Users $user, Newsletter $newsletter, EntityManagerInterface $em, $token): Response
+    {
+        if($user->getValidationToken() != $token)
+        {
+            throw $this->createNotFoundException('Page non trouver');
+        }
+
+        if(count($user->getCategories()) > 1)
+        {
+            $user->removeCategory($newsletter->getCategories());
+            $em->persist($user);
+        }else{
+            $em->remove($user);
+        }
+
+        $em->flush();
+
+        $this->addFlash(
+           'message',
+           'Newsletter supprimer'
+        );
+
+        return $this->redirectToRoute('main');
+    }
 }

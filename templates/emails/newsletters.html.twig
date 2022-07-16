@@ -1,0 +1,6 @@
+<h2>{{newsletter.name}}</h2>
+
+<p>{{newsletter.content|raw}}</p>
+
+<p>Cliquez sur ce lien pour vous deabonner a cette newsletter<a href="{{ absolute_url(path('newsletters_unsubscriber', {id: user.id, newsletter: newsletter.id, token: user.validationToken})) }}">
+{{ absolute_url(path('newsletters_unsubscriber', {id: user.id, newsletter: newsletter.id, token: user.validationToken} )) }}</a></p>
