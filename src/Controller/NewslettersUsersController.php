@@ -8,6 +8,7 @@ use App\Form\NewslettersUsers;
 use App\Form\NewslettersUsersType;
 use App\Form\NewsletterType;
 use App\Repository\Newsletter\NewsletterRepository;
+use App\Services\NewsletterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -118,27 +119,19 @@ class NewslettersUsersController extends AbstractController
     }
 
     #[Route('/send/{id}', name: 'send')]
-    public function send(Newsletter $newsletter, EntityManagerInterface $em, MailerInterface $mailer): Response
+    public function send(Newsletter $newsletter, EntityManagerInterface $em, NewsletterService $newsletterService): Response
     {
         $users = $newsletter->getCategories()->getUsers();
 
         foreach ($users as $user) {
+            sleep(4);
             if ($user->getIsValid() == true) {
-                $email = (new TemplatedEmail())
-                    ->from("Newsletter@site.fr")
-                    ->to($user->getEmail())
-                    ->subject($newsletter->getName())
-                    ->htmlTemplate('emails/newsletters.html.twig')
-                    ->context([
-                        'user' => $user,
-                        'newsletter' => $newsletter
-                    ]);
-
-                $mailer->send($email);
+                $newsletterService->send($user, $newsletter);
             }
 
-            $newsletter->setIsSend(true);
-            $em->flush();
+            // $newsletter->setIsSend(true);
+            // $em->persist($newsletter);
+            // $em->flush();
         }
 
         return $this->redirectToRoute('newsletters_list');
