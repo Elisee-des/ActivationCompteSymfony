@@ -19,7 +19,7 @@ class NewsletterService
     public function send(Users $user, Newsletter $newsletter)
     {
         sleep(4);
-        throw new \Exception("Message non envoyez");
+        // throw new \Exception("Message non envoyez");
         $email = (new TemplatedEmail())
             ->from("Newsletter@site.fr")
             ->to($user->getEmail())
