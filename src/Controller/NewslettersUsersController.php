@@ -7,6 +7,7 @@ use App\Entity\Newsletter\Users;
 use App\Form\NewslettersUsers;
 use App\Form\NewslettersUsersType;
 use App\Form\NewsletterType;
+use App\Message\SendNewsletterMessage;
 use App\Repository\Newsletter\NewsletterRepository;
 use App\Services\NewsletterService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,6 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Messenger\SendEmailMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/newsletters', name: 'newsletters_')]
@@ -119,14 +122,14 @@ class NewslettersUsersController extends AbstractController
     }
 
     #[Route('/send/{id}', name: 'send')]
-    public function send(Newsletter $newsletter, EntityManagerInterface $em, NewsletterService $newsletterService): Response
+    public function send(Newsletter $newsletter, EntityManagerInterface $em, MessageBusInterface $messageBusInterface): Response
     {
+
         $users = $newsletter->getCategories()->getUsers();
 
         foreach ($users as $user) {
-            sleep(4);
             if ($user->getIsValid() == true) {
-                $newsletterService->send($user, $newsletter);
+                $messageBusInterface->dispatch(new SendNewsletterMessage($user->getId(), $newsletter->getId()));
             }
 
             // $newsletter->setIsSend(true);
