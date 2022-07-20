@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FailedSendMessageController!
+{% endblock %}
+
+{% block body %}
+	<div class="example-wrapper">
+		<h1>Gestion des message non envoyez</h1>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Namesapce</th>
+					<th>Newsletter</th>
+					<th>User</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for message in messages %}
+					<tr>
+						<td>{{ message.id }}</td>
+						<td>{{ message.titre }}</td>
+						<td>{{ message.message.newsId }}</td>
+						<td>{{ message.message.userId }}</td>
+						<td>
+							<a href="{{ path("failed_send_message_resent", {id: message.id}) }}">Renvoyez</a>
+							<a href="{{ path("failed_send_message_delete", {id: message.id}) }}">Supprimer</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}
