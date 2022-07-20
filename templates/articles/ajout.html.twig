@@ -1,10 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajout Articles{% endblock %}
+{% block title %}Ajout Articles
+{% endblock %}
+
+{% block stylesheets %}
+	<style>
+		input,
+		textarea,
+		select {
+			display: block;
+			width: 100%
+		}
+		<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	</style>
+{% endblock %}
+
 
 {% block body %}
-<div class="container">
-    <h2>Ajout d'article</h2>
-    {{ form(articleForm) }}
-</div>
-{% endblock %}
+	<div class="container">
+		<h2>Ajout d'article</h2>
+		{{ form(articleForm) }}
+		</div>
+	{% endblock %}
+	{% block javascripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+		<script>
+			$(function(){
+                $('.select-tags').select2({
+                    tags: true,
+                    tokenSeparators: [',', ' ']
+                }).on('change', function(e){
+                    let label = $(this).find("[data-select2-tag=true]");
+                    if(label.length && $.inArray(label.val(), $(this).val() !== -1)){
+                        $.ajax({
+                            url: "/tags/ajout/ajax/"+label.val(),
+                            type: "POST"
+                        }).done(function(data){
+                            console.log(data)
+							label.replaceWith(`<option selected value="${data.id}">${label.val()}</option>`);
+                        })
+                    }
+                })
+            })
+		</script>
+	{% endblock %}

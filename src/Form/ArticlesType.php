@@ -29,7 +29,11 @@ class ArticlesType extends AbstractType
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('t')
                         ->orderBy('t.name', 'ASC');
-                }
+                },
+                'label' => 'Mot cles',
+                'attr' => [
+                    'class' => 'select-tags'
+                ]
             ])
             ->add('Enregistrer', SubmitType::class)
         ;
