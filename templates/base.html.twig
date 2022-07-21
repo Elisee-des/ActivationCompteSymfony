@@ -15,5 +15,16 @@
     </head>
     <body>
         {% block body %}{% endblock %}
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+			{% for message in app.flashes("success") %}
+				Swal.fire({
+					"icon":"success",
+					"title":"Success",
+					"text":"{{ message }}",
+                    "timer": 1500
+				})
+			{% endfor %}
+        </script>
     </body>
 </html>

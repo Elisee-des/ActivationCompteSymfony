@@ -25,6 +25,11 @@ class ArticlesController extends AbstractController
 
             $em->persist($article);
             $em->flush();
+
+            $this->addFlash(
+               'success',
+               'Article ajouter avec succes'
+            );
         }
 
         return $this->render('articles/ajout.html.twig', [
