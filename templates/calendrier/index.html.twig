@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{ asset("assets/css/main.min.css") }}">
 <style>
     #calendrier {
-        width: 80%;
+        width: 50%;
         margin: auto;
     }
 </style>
@@ -15,6 +15,7 @@
 
 
 {% block body %}
+        {# {{ dump() }} #}
     <div id="calendrier">
     </div>
 {% endblock %}
@@ -32,9 +33,32 @@
             start: 'prev,next today',
             center: 'title',
             end: 'dayGridMonth,timeGridWeek'
-          }
+          },
+          events: {{ data|raw }},
+          editable: true,
+          eventResizableFromStart:true
         });
 
+        calendar.on('eventChange', (e) => {
+            let url = `/api/${e.event.id}/edit`;
+
+            let donnee = {
+                "title": e.event.title,
+                "description": e.event.extendedProps.description,
+                "start":  e.event.start,
+                "end": e.event.end,
+                "backgroundColor": e.event.backgroundColor,
+                "borderColor": e.event.borderColor,
+                "textColor": e.event.textColor,
+                "allDay": e.event.allDay
+            };
+
+            let xhr = new XMLHttpRequest;
+
+            xhr.open('PUT', url);
+            xhr.send(JSON.stringify(donnee))
+        })
+        
         calendar.render()
     }
 </script>

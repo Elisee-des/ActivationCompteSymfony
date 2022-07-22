@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CalendarRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CalendarRepository::class)]
@@ -36,6 +37,11 @@ class Calendar
 
     #[ORM\Column(type: 'string', length: 7)]
     private $text_color;
+
+    public function __construct()
+    {
+        $this->start = new \DateTime();
+    }
 
     public function getId(): ?int
     {
